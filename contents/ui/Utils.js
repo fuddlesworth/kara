@@ -14,6 +14,10 @@ function qdbusRun(service, path, ifaceMethod, args) {
     var escaped = (args || []).map(function(a) { return '"' + shellEscape(a) + '"'; });
     return "sh -c 'QDBUS=$(command -v qdbus6 || command -v qdbus) && exec $QDBUS " + service + " " + path + " " + ifaceMethod + (escaped.length ? " " + escaped.join(" ") : "") + "'";
 }
+// Activate virtual desktop by ID (via DBus Properties.Set)
+function qdbusActivateDesktop(desktopId) {
+    return qdbusRun("org.kde.KWin", "/VirtualDesktopManager", "org.freedesktop.DBus.Properties.Set", ["org.kde.KWin.VirtualDesktopManager", "current", String(desktopId)]);
+}
 
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX",
     "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX",

@@ -57,8 +57,9 @@ Rectangle {
 
     MouseArea {
         id: mouseArea
+        z: 10
         anchors.fill: parent
-        onClicked: virtualDesktopInfo.requestActivate(virtualDesktopInfo.desktopIds[pos])
+        onClicked: root.activateDesktop(pos)
         acceptedButtons: Qt.LeftButton
         hoverEnabled: true
     }

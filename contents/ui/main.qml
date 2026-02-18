@@ -36,6 +36,9 @@ PlasmoidItem {
         connectedSources: []
         onNewData: disconnectSource(sourceName)
     }
+    function activateDesktop(pos) {
+        dbusExecutable.connectSource(Utils.qdbusActivateDesktop(virtualDesktopInfo.desktopIds[pos]))
+    }
     TaskManager.ActivityInfo { id: activityInfo }
     Activities.ActivityInfo { id: fullActivityInfo; activityId: ":current" }
 
