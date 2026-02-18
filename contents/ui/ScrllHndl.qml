@@ -1,13 +1,14 @@
 import QtQuick
 import QtQuick.Layouts
 import org.kde.plasma.plasma5support as Plasma5Support
+import "./Utils.js" as Utils
 
 MouseArea {
     property int wheelDelta : 0
 
     acceptedButtons: Qt.MiddleButton
     //Open Grid View on middle Click
-    onClicked: executable.connectSource('qdbus org.kde.kglobalaccel /component/kwin invokeShortcut \"Grid View\"')
+    onClicked: executable.connectSource(Utils.qdbusRun("org.kde.kglobalaccel", "/component/kwin", "org.kde.kglobalaccel.Component.invokeShortcut", ["Grid View"]))
 
     //Scroll Handler
     onWheel : wheel => {
@@ -23,13 +24,15 @@ MouseArea {
         }
         while (increment !== 0) {
             if (increment < 0) {
-                const nextPage = cfg.wrapOn? (curr_page + 1) % pagerModel.count :
-                Math.min(curr_page + 1, pagerModel.count - 1);
-                pagerModel.changePage(nextPage);
+                const count = virtualDesktopInfo.numberOfDesktops;
+                const nextPage = cfg.wrapOn? (curr_page + 1) % count :
+                Math.min(curr_page + 1, count - 1);
+                virtualDesktopInfo.requestActivate(virtualDesktopInfo.desktopIds[nextPage]);
             } else {
-                const previousPage = cfg.wrapOn? (pagerModel.count + curr_page - 1) % pagerModel.count :
+                const count = virtualDesktopInfo.numberOfDesktops;
+                const previousPage = cfg.wrapOn? (count + curr_page - 1) % count :
                 Math.max(curr_page - 1, 0);
-                pagerModel.changePage(previousPage);
+                virtualDesktopInfo.requestActivate(virtualDesktopInfo.desktopIds[previousPage]);
             }
             increment += (increment < 0) ? 1 : -1;
             wheelDelta = 0;

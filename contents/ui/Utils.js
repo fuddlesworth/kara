@@ -1,5 +1,20 @@
 //Roman numerals 1..=50
 
+// Escape string for use inside double quotes in shell
+function shellEscape(str) {
+    return String(str).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+// Run qdbus command (uses qdbus6 or qdbus, whichever is available)
+function qdbusCommand(method, args) {
+    var escaped = args.map(function(a) { return '"' + shellEscape(a) + '"'; });
+    return "sh -c 'QDBUS=$(command -v qdbus6 || command -v qdbus) && exec $QDBUS org.kde.KWin /VirtualDesktopManager org.kde.KWin.VirtualDesktopManager." + method + " " + escaped.join(" ") + "'";
+}
+// Generic qdbus runner for any service (service, path, interface.method, [args])
+function qdbusRun(service, path, ifaceMethod, args) {
+    var escaped = (args || []).map(function(a) { return '"' + shellEscape(a) + '"'; });
+    return "sh -c 'QDBUS=$(command -v qdbus6 || command -v qdbus) && exec $QDBUS " + service + " " + path + " " + ifaceMethod + (escaped.length ? " " + escaped.join(" ") : "") + "'";
+}
+
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX",
     "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX",
     "XXI", "XXII", "XXIII", "XXIV", "XXV", "XXVI", "XXVII", "XXVIII", "XXIX", "XXX",

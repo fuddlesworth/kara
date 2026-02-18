@@ -58,7 +58,7 @@ Rectangle {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-        onClicked: pagerModel.changePage(pos)
+        onClicked: virtualDesktopInfo.requestActivate(virtualDesktopInfo.desktopIds[pos])
         acceptedButtons: Qt.LeftButton
         hoverEnabled: true
     }
